@@ -7,4 +7,8 @@ The application can be started after building source using the following command
     java -jar target/ProductApi-1.0-SNAPSHOT.jar
     
 To test the API use the curl run the following commands:
+    Retrieve Product;
+        curl http://localhost:8080/product/13860428
 
+    To update cost:
+        curl -X PUT --header 'Content-Type: application/json' -d '{"newPrice": "3.00"}' http://localhost:8080/product/13860428
