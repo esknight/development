@@ -77,7 +77,6 @@ public class CostDBDAO {
         updatePriceDoc.put("$set", newPriceDoc);
 
        //Get updated cost
-       //Holding on to this to figure out why it is not working if time permits
        CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
                fromProviders(PojoCodecProvider.builder().automatic(Boolean.TRUE).build()));
        MongoClient client = MongoClients.create("mongodb://localhost:27017");

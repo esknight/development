@@ -28,7 +28,7 @@ public class JSONUtil {
 
     /**
      * Used to convert product objects to JSON.
-     * @param covertObj The product object to converto to the JSOn representation.
+     * @param covertObj The product object to convert to the JSON representation.
      * @return Json string representation of the product object.
      */
     public static String convertStrToJSON(Product covertObj) {

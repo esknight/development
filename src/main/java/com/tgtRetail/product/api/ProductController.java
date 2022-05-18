@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
 
     /**
-     * Product Rest API to retreive the product with the request ID.
+     * Product Rest API to retrieve the product with the request ID.
      * @param id unique identifier for the product.
      * @return JSON representation of the product object.
      */

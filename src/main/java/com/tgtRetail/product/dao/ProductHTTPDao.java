@@ -27,7 +27,7 @@ public class ProductHTTPDao {
     Boolean isValidProduct = Boolean.TRUE;
 
     /**
-     *  Contructor to create the DAO that will retrieve the requested product informatio from url.
+     *  Contractor to create the DAO that will retrieve the requested product information from url.
      * @param productId Unique id of product being requested.
      */
     public ProductHTTPDao(String productId)  {

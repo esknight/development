@@ -1,8 +1,7 @@
 package com.tgtRetail.product.api;
 
-import com.tgtRetail.product.dao.CostDBDAO;
 import org.bson.codecs.pojo.annotations.BsonProperty;
-import org.springframework.web.bind.annotation.GetMapping;
+
 
 /**
  * Pojo to hold cost attributes.

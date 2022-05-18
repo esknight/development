@@ -15,14 +15,14 @@ import java.io.IOException;
 public class ProductManager {
 
     private CostDBDAO costDBDAO;
-    private Product product ;
+    private final Product product ;
 
 
     //Used to determine if the product is validated to improve performance and reduce resource utilization.
-    private Boolean isValidProduct;
+    private final Boolean isValidProduct;
 
     /**
-     * Contractor for product will reteive the product information for the id passed to the constructor.
+     * Contractor for product will receive the product information for the id passed to the constructor.
      * @param productId The unique identifier for the product of interest.
      */
     public ProductManager(String productId) {
