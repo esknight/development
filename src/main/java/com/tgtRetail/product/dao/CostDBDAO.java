@@ -14,7 +14,7 @@ import com.tgtRetail.product.api.Cost;
 import org.bson.Document ;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
-import org.bson.types.ObjectId;
+import org.bson.conversions.Bson;
 
 
 import static com.mongodb.client.model.Filters.eq;
@@ -25,7 +25,6 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 public class CostDBDAO {
     private Cost cost;
 
-    private MongoCollection<Cost> pricingCollection ;
 
     /**
      * Constructor to retrieve the cost information from the MongoDB.
@@ -33,17 +32,23 @@ public class CostDBDAO {
      */
     public CostDBDAO(final String productId) {
         try {
-                MongoClient client = MongoClients.create("mongodb://localhost:27017");
+            MongoClient client = MongoClients.create("mongodb://localhost:27017");
+            MongoDatabase dbObj = client.getDatabase("product");
 
-                //Setup Registry to allow Pojo mapping between class and DB.
-                CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
-                            fromProviders(PojoCodecProvider.builder().automatic(Boolean.TRUE).build()));
-                //MongoClient mongoClient = MongoClients.create(pojoCodecRegistry);
+            MongoCollection<Document> pricingCollection = dbObj.getCollection("pricing");
 
-                MongoDatabase dbObj = client.getDatabase("product").withCodecRegistry(pojoCodecRegistry);
-                pricingCollection = dbObj.getCollection("pricing", Cost.class).withCodecRegistry(pojoCodecRegistry);
+            //Bson filter = eq("product_id", "13860428");
+            Bson filter = eq("product_id", productId);
+            Document costDoc = pricingCollection.find(filter).first() ;
 
-                cost = pricingCollection.find(eq("product_id",productId)).first();
+            if(costDoc == null){
+                cost = new Cost(productId);
+            }else{
+
+                cost = new Cost(productId);
+                cost.setCurrency_code(costDoc.get("currency").toString());
+                cost.setValue(Float.parseFloat(costDoc.get("price").toString()));
+            }
 
         } catch ( MongoTimeoutException exp){
             System.out.println("Timeout Exception msg: \n"+ exp.getMessage());
@@ -56,9 +61,9 @@ public class CostDBDAO {
     }
 
     /**
-     * Mothod used to update the cost if entry exists otherwise price entry will be created.
+     * Method used to update the cost if entry exists otherwise price entry will be created.
      * @param productId The unique identifier for the product of interest.
-     * @param costValue New price for the prodyct.
+     * @param costValue New price for the product.
      */
    public void updateCostValue(final String productId, final float costValue){
 
@@ -71,11 +76,17 @@ public class CostDBDAO {
         BasicDBObject updatePriceDoc = new BasicDBObject();
         updatePriceDoc.put("$set", newPriceDoc);
 
+       //Get updated cost
+       //Holding on to this to figure out why it is not working if time permits
+       CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
+               fromProviders(PojoCodecProvider.builder().automatic(Boolean.TRUE).build()));
+       MongoClient client = MongoClients.create("mongodb://localhost:27017");
+       MongoDatabase dbObj = client.getDatabase("product");
 
-        System.out.println("Querying product_id: " + productId );
-        pricingCollection.updateOne(query, updatePriceDoc);
+       MongoCollection<Cost> pricingCostCollection = dbObj.getCollection("pricing",Cost.class).withCodecRegistry(pojoCodecRegistry);
 
-        cost.setValue(costValue);
+       pricingCostCollection.updateOne(query, updatePriceDoc);
+       cost.setValue(costValue);
     }
 
     public Cost getCost() {
@@ -84,30 +95,10 @@ public class CostDBDAO {
 
     /**
      * Used for testing method.
-     * @param args
+     * @param args Command line args for testing.
      */
     public static void main(String[] args) {
-        //CostDBDAO costDBDAO =  new CostDBDAO("13860428");
-
-        //Register Pojo
-        CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
-                fromProviders(PojoCodecProvider.builder().automatic(Boolean.TRUE).build()));
-
-        try {
-
-            MongoClient testClient = MongoClients.create("mongodb://localhost:27017");
-            MongoDatabase dbObjTest = testClient.getDatabase("product");
-
-            MongoCollection<Cost> pricingCollection = dbObjTest.getCollection("pricing", Cost.class)
-                    .withCodecRegistry(pojoCodecRegistry);
-
-            Cost cost = pricingCollection.find(eq("product_id", "13860428")).first();
-
-            System.out.println("13860428" + " " + cost.getValue() + " " + cost.getCurrency_code());
-        }catch(Exception exp){
-            System.out.println(exp.getMessage());
-        }
-
-
+        CostDBDAO costDBDAO =  new CostDBDAO("13860428");
+        costDBDAO.updateCostValue("13860428", 3.88f);
     }
 }

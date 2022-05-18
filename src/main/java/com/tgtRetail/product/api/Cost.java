@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class Cost {
     @BsonProperty(value = "value")
     private float value = 0.00f;
+
     @BsonProperty(value = "currency")
     private String currency_code = "USD";
     @BsonProperty(value = "product_id")
@@ -23,11 +24,8 @@ public class Cost {
     }
 
     public float getValue() { return value; }
-/*
-    public String getProductId() {
-        return productId;
-    }
-*/
+
+
     public void setProductId(String productId) {
         this.productId = productId;
     }
