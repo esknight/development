@@ -1,4 +1,4 @@
-# development
+# development - Product API
 
 This sprint boot application is used to produce a JSON product response using a restful API .
 The back in isusing a MongoDB. 
@@ -12,3 +12,4 @@ To test the API use the curl run the following commands:
 
     To update cost:
         curl -X PUT --header 'Content-Type: application/json' -d '{"newPrice": "3.00"}' http://localhost:8080/product/13860428
+          
