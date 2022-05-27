@@ -21,6 +21,12 @@ public class ProductController {
         return JSONUtil.convertStrToJSON(productMgr.getProduct());
     }
 
+    /**
+     * API call to update price.
+     * @param id ID of product to update price
+     * @param jsonPrice JSON representation of updated product.
+     * @return
+     */
     @PutMapping(path="/product/{id}")
     public String setProductCost(@PathVariable String id, @RequestBody String jsonPrice ){
         ProductManager productMgr  = new ProductManager(id);
